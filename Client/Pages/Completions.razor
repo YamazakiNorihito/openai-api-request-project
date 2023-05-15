@@ -1,0 +1,22 @@
+﻿@page "/completion"
+@using Client.Services
+@inject IOpenAIService IOpenAIService
+
+<div class="container">
+    <h1 class="text-3xl">OpenAI APIコンプリーションリクエスト</h1>
+    <textarea id="prompt" class="border" placeholder="リクエストのプロンプトを入力してください" @bind="prompt"></textarea>
+    <button @onclick="CompleteRequestAsync" class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded">リクエストを送信</button>
+    <div id="result" class="bg-gray-100 p-4 mt-4">@result</div>
+</div>
+
+@code {
+    private string? prompt;
+    private string? result;
+
+    private async Task CompleteRequestAsync()
+    {
+        if (string.IsNullOrWhiteSpace(prompt)) return;
+        result = string.Empty;
+        result = await IOpenAIService.GetCompletionAsync(prompt);
+    }
+}
