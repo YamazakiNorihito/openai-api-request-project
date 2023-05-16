@@ -81,3 +81,4 @@ $RECYCLE.BIN/
 # End of https://www.toptal.com/developers/gitignore/api/dotnetcore,go,visualstudiocode,windows
 
 */.vs/*
+.vscode/*
