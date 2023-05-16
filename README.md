@@ -25,5 +25,31 @@ VSCODE
 
 - [Tutorial: Get started with Go](https://go.dev/doc/tutorial/getting-started)
 
+### 参考
+- [Effective Go](https://go.dev/doc/effective_go)
+- [How to Write Go Code](https://go.dev/doc/code)
+- [Gin Web Framework](https://pkg.go.dev/github.com/gin-gonic/gin#section-readme)
+- [Gin Web Framework Documentation](https://gin-gonic.com/docs/)
+
+### Gin WEB
+
+```bash
+go mod init example/web-service-gin
+
+
+<< COMMENTOUT
+main.go fileに書きを記述は必須
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+COMMENTOUT
+go get .
+
+go run .
+
+```
+
 
 
