@@ -19,7 +19,7 @@ builder.Services.AddSingleton<IOpenAIService, OpenAIService>(
     {
         var config = p.GetRequiredService<IConfiguration>();
         var httpClientFactory = p.GetRequiredService<IHttpClientFactory>();
-        return new OpenAIService(httpClientFactory, config["APIkey"]);
+        return new OpenAIService(httpClientFactory, config["BackEndUri"]!);
     }
 );
 await builder.Build().RunAsync();

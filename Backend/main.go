@@ -7,11 +7,19 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	router := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	config.AllowMethods = []string{"POST"}
+	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
+	router.Use(cors.New(config))
+
 	router.POST("/completions", getCompletions)
 	router.Run("localhost:8080")
 }

@@ -1,5 +1,6 @@
 ﻿@page "/completion"
 @using Client.Services
+@using System.Text
 @inject IOpenAIService IOpenAIService
 
 <div class="container">
@@ -17,6 +18,26 @@
     {
         if (string.IsNullOrWhiteSpace(prompt)) return;
         result = string.Empty;
-        result = await IOpenAIService.GetCompletionAsync(prompt);
+        try
+        {
+            result = await IOpenAIService.GetCompletionAsync(prompt);
+        }
+        catch (Exception ex)
+        {    var stringBuilder = new StringBuilder();
+            while (ex != null)
+            {
+                stringBuilder.AppendLine($"Exception Type: {ex.GetType().FullName}");
+                stringBuilder.AppendLine($"Message: {ex.Message}");
+                stringBuilder.AppendLine($"Stack Trace: {ex.StackTrace}");
+
+                ex = ex.InnerException;
+                if (ex != null)
+                {
+                    stringBuilder.AppendLine("Inner Exception:");
+                }
+            }
+
+            result = stringBuilder.ToString();
+        }
     }
 }

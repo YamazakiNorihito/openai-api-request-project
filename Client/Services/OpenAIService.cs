@@ -11,32 +11,25 @@ public interface IOpenAIService
 public class OpenAIService : IOpenAIService
 {
     private readonly IHttpClientFactory _httpClientFactory;
-    private readonly string _token;
+    private readonly string _backEndUri;
 
-    public OpenAIService(IHttpClientFactory httpClientFactory, string token)
+    public OpenAIService(IHttpClientFactory httpClientFactory, string backEndUri)
     {
-        (_httpClientFactory, _token) = (httpClientFactory, token);
+        (_httpClientFactory, _backEndUri) = (httpClientFactory, backEndUri);
     }
 
     public async Task<string> GetCompletionAsync(string prompt)
     {
         var requestData = new
         {
-            model = "text-davinci-003",
-            prompt = prompt,
-            max_tokens = 50,
-            temperature = 0.6
+            prompt
         };
         var jsonRequestData = JsonSerializer.Serialize(requestData);
         var httpRequestMessage = new HttpRequestMessage(
             HttpMethod.Post,
-            "https://api.openai.com/v1/completions")
+            $"{_backEndUri}/completions")
         {
-            Content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json"),
-            Headers =
-            {
-                { "Authorization", $"Bearer {_token}" },
-            }
+            Content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json")
         };
 
         var httpClient = _httpClientFactory.CreateClient("OpenAIApi");
