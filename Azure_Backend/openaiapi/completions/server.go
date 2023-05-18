@@ -4,35 +4,29 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
-
-	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := gin.Default()
-
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	config.AllowMethods = []string{"POST"}
-	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
-	router.Use(cors.New(config))
-
-	router.POST("/completions", getCompletions)
-	router.Run("localhost:8080")
+	customHandlerPort, exists := os.LookupEnv("FUNCTIONS_CUSTOMHANDLER_PORT")
+	if !exists {
+		customHandlerPort = "8080"
+	}
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/completions", helloHandler)
+	fmt.Println("Go server Listening on: ", customHandlerPort)
+	log.Fatal(http.ListenAndServe(":"+customHandlerPort, mux))
 }
 
-// getAlbums responds with the list of all albums as JSON.
-func getCompletions(c *gin.Context) {
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	var requestData struct {
 		Prompt string `json:"prompt"  binding:"required"`
 	}
-
-	// リクエストボディから Prompt を取得
-	if err := c.ShouldBindJSON(&requestData); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("failed to parse request body: %v", err)})
+	if err := json.NewDecoder(r.Body).Decode(&requestData); err != nil {
+		http.Error(w, `{"error": "`+fmt.Sprintf("failed to parse request body: %v", err)+`"}`, http.StatusInternalServerError)
 		return
 	}
 
@@ -45,20 +39,20 @@ func getCompletions(c *gin.Context) {
 
 	jsonRequestData, err := json.Marshal(textCompletionRequest)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("failed to marshal request data: %v\n", err)})
+		http.Error(w, `{"error": "`+fmt.Sprintf("failed to marshal request data: %v\n", err)+`"}`, http.StatusInternalServerError)
 		return
 	}
 
 	url := "https://api.openai.com/v1/completions"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(jsonRequestData))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to create request"})
+		http.Error(w, `{"error": "`+fmt.Sprintf("failed to marshal request data: %v\n", err)+`"}`, http.StatusInternalServerError)
 		return
 	}
 
 	bearer := getOpenAIBearerToken()
 	if bearer == "" {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Bearer token not found"})
+		http.Error(w, `{"error": "Bearer token not found"}`, http.StatusInternalServerError)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
@@ -68,7 +62,7 @@ func getCompletions(c *gin.Context) {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to send request"})
+		http.Error(w, `{"error": "failed to send request"}`, http.StatusInternalServerError)
 		return
 	}
 	defer resp.Body.Close()
@@ -76,11 +70,11 @@ func getCompletions(c *gin.Context) {
 	completions := TextCompletionResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&completions)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read response body"})
+		http.Error(w, `{"error": "failed to read response body"}`, http.StatusInternalServerError)
 		return
 	}
 
-	c.JSON(http.StatusOK, completions)
+	json.NewEncoder(w).Encode(completions)
 }
 
 func getOpenAIBearerToken() string {
