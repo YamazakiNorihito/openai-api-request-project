@@ -22,7 +22,7 @@ func main() {
 
 	router.GET("/ping", getPing)
 	router.POST("/completions", getCompletions)
-	router.Run(":8080")
+	router.Run(":80")
 }
 
 // getAlbums responds with the list of all albums as JSON.
