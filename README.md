@@ -29,6 +29,7 @@ VSCODE
 
 - [Tutorial: Get started with Go](https://go.dev/doc/tutorial/getting-started)
 - [Go でサーバーレス アプリを構築する](https://learn.microsoft.com/ja-jp/training/modules/serverless-go/)
+- [Build your Go image](https://matsuand.github.io/docs.docker.jp.onthefly/language/golang/build-images/)
 
 ### 参考
 - [Effective Go](https://go.dev/doc/effective_go)
