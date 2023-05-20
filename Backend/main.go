@@ -16,12 +16,18 @@ func main() {
 
 	config := cors.DefaultConfig()
 	config.AllowAllOrigins = true
-	config.AllowMethods = []string{"POST"}
+	config.AllowMethods = []string{"GET", "POST"}
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
 	router.Use(cors.New(config))
 
+	router.GET("/ping", getPing)
 	router.POST("/completions", getCompletions)
-	router.Run("localhost:8080")
+	router.Run(":8080")
+}
+
+// getAlbums responds with the list of all albums as JSON.
+func getPing(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{"error": "Hello OK!!"})
 }
 
 // getAlbums responds with the list of all albums as JSON.
