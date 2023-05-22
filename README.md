@@ -58,5 +58,29 @@ go run .
 
 ```
 
+go のDeployFileとってくる
+```bash
+docker build -t go-opena-i-api:1.0 .
+docker create --name openai-api go-openai-api:1.0
+
+# dockerfileを置いてある場所でやったほうがいい cp先は相対パスなので
+docker cp openai-api:/app/deployment.zip .
+
+docker rm openai-api
+```
+
+```bash
+az login
+
+# ZIP デプロイのビルド自動化を有効にする
+# https://learn.microsoft.com/ja-jp/azure/app-service/deploy-zip?tabs=cli#enable-build-automation-for-zip-deploy
+az webapp config appsettings set --name <app-name> --resource-group <resource-group> --settings SCM_DO_BUILD_DURING_DEPLOYMENT=1 --subscription <subscription>
+
+# power shell
+Compress-Archive -Path main.go, go.mod, go.sum -DestinationPath deployment.zip -U
 
 
+az webapp deployment source config-zip --name <app-name> --resource-group <resource-group> --src deployment.zip --subscription <subscription>
+
+az webapp log deployment show -n <app-name> -g <resource-group> --subscription <subscription>
+```

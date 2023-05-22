@@ -84,6 +84,8 @@ $RECYCLE.BIN/
 .vscode/*
 .vs/*
 
+*.zip
+
 
 # Azure Functions artifacts
 bin

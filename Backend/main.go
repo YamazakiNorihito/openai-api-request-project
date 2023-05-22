@@ -20,14 +20,14 @@ func main() {
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type"}
 	router.Use(cors.New(config))
 
-	router.GET("/ping", getPing)
+	router.GET("/", getPing)
 	router.POST("/completions", getCompletions)
-	router.Run(":80")
+	router.Run(":8080")
 }
 
 // getAlbums responds with the list of all albums as JSON.
 func getPing(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{"error": "Hello OK!!"})
+	c.JSON(http.StatusOK, gin.H{"stats": "Hello OK!!"})
 }
 
 // getAlbums responds with the list of all albums as JSON.

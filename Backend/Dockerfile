@@ -12,4 +12,8 @@ COPY . .
 
 RUN go build -o main .
 
+# Install zip utility
+RUN apk add --no-cache zip
+RUN zip deployment.zip main go.mod go.sum
+
 CMD ["./main"]
