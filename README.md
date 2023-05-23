@@ -84,3 +84,12 @@ az webapp deployment source config-zip --name <app-name> --resource-group <resou
 
 az webapp log deployment show -n <app-name> -g <resource-group> --subscription <subscription>
 ```
+
+
+```bash
+### docker実行する
+docker build -t docker-go-openai-api  .
+
+docker run --publish 8080:8080 --env OPENAI_BEARER_TOKEN={token} docker-go-openai-api
+
+```
