@@ -5,6 +5,7 @@
 #### 学習
 
 - [Azure Static Web Apps を使用して Blazor WebAssembly アプリと .NET API を公開する](https://learn.microsoft.com/ja-jp/training/modules/publish-app-service-static-web-app-api-dotnet/)
+- [Blazor とサーバーレス API を使用して Azure Static Web Apps の Web サイトをビルドする](https://learn.microsoft.com/ja-jp/azure/static-web-apps/deploy-blazor)
 
 
 ### Golange
